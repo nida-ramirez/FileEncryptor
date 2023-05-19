@@ -1,0 +1,70 @@
+using System;
+using System.IO;
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("Welcome to File Encryptor!");
+
+        Console.Write("Enter the path to the file you want to encrypt: ");
+        string filePath = Console.ReadLine();
+
+        if (!File.Exists(filePath))
+        {
+            Console.WriteLine("File not found.");
+            return;
+        }
+
+        Console.Write("Enter the encryption key: ");
+        string encryptionKey = Console.ReadLine();
+
+        string encryptedFilePath = EncryptFile(filePath, encryptionKey);
+
+        Console.WriteLine("File encrypted successfully.");
+        Console.WriteLine("Encrypted file: " + encryptedFilePath);
+    }
+
+    static string EncryptFile(string filePath, string encryptionKey)
+    {
+        string encryptedFilePath = GetEncryptedFilePath(filePath);
+
+        using (StreamReader reader = new StreamReader(filePath))
+        using (StreamWriter writer = new StreamWriter(encryptedFilePath))
+        {
+            string line;
+            while ((line = reader.ReadLine()) != null)
+            {
+                string encryptedLine = EncryptString(line, encryptionKey);
+                writer.WriteLine(encryptedLine);
+            }
+        }
+
+        return encryptedFilePath;
+    }
+
+    static string EncryptString(string input, string encryptionKey)
+    {
+        // Encryption logic goes here
+        // Implement your own encryption algorithm
+
+        // For demonstration purposes, let's just reverse the input string
+        char[] charArray = input.ToCharArray();
+        Array.Reverse(charArray);
+        string encryptedString = new string(charArray);
+
+        return encryptedString;
+    }
+
+    static string GetEncryptedFilePath(string filePath)
+    {
+        string directory = Path.GetDirectoryName(filePath);
+        string fileName = Path.GetFileNameWithoutExtension(filePath);
+        string extension = Path.GetExtension(filePath);
+
+        string encryptedFileName = fileName + "_encrypted" + extension;
+        string encryptedFilePath = Path.Combine(directory, encryptedFileName);
+
+        return encryptedFilePath;
+    }
+}
